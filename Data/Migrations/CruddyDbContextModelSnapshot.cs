@@ -160,6 +160,7 @@ namespace Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 

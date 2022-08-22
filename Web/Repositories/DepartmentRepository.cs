@@ -1,5 +1,6 @@
 ﻿using Cruddy.Application.Models;
 using Cruddy.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cruddy.Web.Repositories
 {
@@ -12,9 +13,14 @@ namespace Cruddy.Web.Repositories
 			_dbContext = dbContext;
 		}
 
-		public IEnumerable<Department> GetAll()
+		public async Task<IQueryable<Department>> GetAll()
 		{
 			return _dbContext.Departments;
+		}
+
+		public async Task<IQueryable<string>> GetAllByName()
+		{
+			return _dbContext.Departments.Select(d => d.Name);
 		}
 
 		public Department GetById(int? id)

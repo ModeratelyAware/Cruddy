@@ -13,9 +13,19 @@ namespace Cruddy.Web.Repositories
 			_dbContext = dbContext;
 		}
 
-		public IEnumerable<Employee> GetAll()
+		public async Task<IQueryable<Employee>> GetAll()
 		{
 			return _dbContext.Employees.Include(e => e.Department);
+		}
+
+		public async Task<IQueryable<Employee>> GetAllFiltered(string? filteredDepartment, string? searchString)
+		{
+			var employees = _dbContext.Employees.Include(e => e.Department);
+			employees = FilterByDepartment(employees, filteredDepartment).Include(e => e.Department);
+			employees = FilterBySearch(employees, searchString).Include(e => e.Department);
+			OrderByTitle(employees, out var ordered, out var remainder);
+			employees = ordered.Concat(remainder).Include(e => e.Department);
+			return employees;
 		}
 
 		public Employee GetById(int? id)
@@ -53,17 +63,7 @@ namespace Cruddy.Web.Repositories
 			_dbContext.SaveChanges();
 		}
 
-		public IEnumerable<Employee> GetFilterBySearch(string? filteredDepartment, string? searchString)
-		{
-			var employees = GetAll();
-			employees = FilterByDepartment(employees, filteredDepartment);
-			employees = FilterBySearch(employees, searchString);
-			OrderByTitle(employees, out var ordered, out var remainder);
-			employees = ordered.Concat(remainder);
-			return employees;
-		}
-
-		private IEnumerable<Employee> FilterBySearch(IEnumerable<Employee> employees, string? searchString)
+		private IQueryable<Employee> FilterBySearch(IQueryable<Employee> employees, string? searchString)
 		{
 			if (searchString != null)
 			{
@@ -78,7 +78,7 @@ namespace Cruddy.Web.Repositories
 			return employees;
 		}
 
-		private IEnumerable<Employee> FilterByDepartment(IEnumerable<Employee> employees, string? filteredDepartment)
+		private IQueryable<Employee> FilterByDepartment(IQueryable<Employee> employees, string? filteredDepartment)
 		{
 			if (filteredDepartment != null)
 			{
@@ -89,21 +89,49 @@ namespace Cruddy.Web.Repositories
 			return employees;
 		}
 
-		private void OrderByTitle(IEnumerable<Employee> employees, out IEnumerable<Employee> ordered, out IEnumerable<Employee> remainder)
+		private void OrderByTitle(IQueryable<Employee> employees, out IQueryable<Employee> ordered, out IQueryable<Employee> remainder)
 		{
-			var titles = new string[] { "VP", "Director", "Assistant Director", "Manager", "Assistant Manager", "Supervisor" };
-			var indexedEmployees = employees
-							.Select(e => new { Employee = e, Index = Array.IndexOf(titles, e.Title) })
+			ordered = employees
+				.OrderBy(e => IndexEmployeeByTitle(e.Title))
+				.ThenBy(e => e.LastName);
+
+			var indexedEmployees = employees.AsEnumerable()
+							.Select(e => new { Employee = e, Index = IndexEmployeeByTitle(e.Title.ToLower()) })
 							.OrderBy(e => e.Index)
 							.ThenBy(e => e.Employee.LastName);
 
 			ordered = indexedEmployees
 						.Where(e => e.Index >= 0)
-						.Select(e => e.Employee);
+						.Select(e => e.Employee)
+						.AsQueryable();
 
 			remainder = indexedEmployees
 						.Where(e => e.Index == -1)
-						.Select(e => e.Employee);
+						.Select(e => e.Employee)
+						.AsQueryable();
 		}
+
+		private int IndexEmployeeByTitle(string employeeTitle)
+		{
+			employeeTitle = employeeTitle.Replace(" ", string.Empty);
+			foreach (var value in Enum.GetValues(typeof(EmployeeTitle)))
+			{
+				if (employeeTitle == value.ToString()!.ToLower())
+				{
+					return (int)value;
+				};
+			};
+			return -1;
+		}
+	}
+
+	public enum EmployeeTitle
+	{
+		VP,
+		Director,
+		AssistantDirector,
+		Manager,
+		AssistantManager,
+		Supervisor
 	}
 }

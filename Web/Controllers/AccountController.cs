@@ -11,9 +11,8 @@ using Microsoft.AspNetCore.Identity;
 using Cruddy.Data.Identity.Models;
 using System.Security.Claims;
 
-namespace Web.Areas.AdminPortal.Controllers
+namespace Cruddy.Web.Account.Controllers
 {
-	[Area("Account")]
 	[ModelStateActionFilter]
 	public class AccountController : Controller
 	{
@@ -26,22 +25,28 @@ namespace Web.Areas.AdminPortal.Controllers
 
 		public IActionResult Login()
 		{
-			var accountVM = new AccountViewModel();
-			return View(accountVM);
+			var loginViewModel = new LoginViewModel();
+			return View(loginViewModel);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Login(CruddyUser user, string password)
+		public async Task<IActionResult> Login(LoginViewModel loginViewModel)
 		{
-			var account = await _signInManager.UserManager.FindByNameAsync(user.UserName);
-			var result = await _signInManager.PasswordSignInAsync(account, password, true, false);
+			var account = await _signInManager.UserManager.FindByNameAsync(loginViewModel.Username);
 
-			if (!result.Succeeded)
+			if (account != null)
 			{
-				return RedirectToAction("Login");
+				var result = await _signInManager.PasswordSignInAsync(account, loginViewModel.Password, true, false);
+
+				if (result.Succeeded)
+				{
+					return RedirectToAction("Index", "Manage", new { area = "Admin" });
+				}
 			}
-			return RedirectToAction("Index", "Manage", new { area = "Admin" });
+
+			ModelState.AddModelError("", "Username or password is incorrect.");
+			return View(loginViewModel);
 		}
 
 		[HttpPost]
