@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Cruddy.Data.Identity.Models
+
+@inject SignInManager<CruddyUser> SignInManager
+@inject UserManager<CruddyUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <label>Hello @UserManager.GetUserName(User)!</label>
+    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" method="post" >
+        <button asp-area="Account" asp-controller="Account" asp-action="Logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+    </form>
+}
+else
+{
+    <ul class="navbar-nav flex-grow-2">
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Account" asp-controller="Account" asp-action="Login">Login</a>
+        </li>
+    </ul>
+}
