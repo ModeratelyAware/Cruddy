@@ -28,39 +28,45 @@ namespace Cruddy.Web.Repositories
 			return employees;
 		}
 
-		public Employee GetById(int? id)
+		public async Task<Employee> GetById(int? id)
 		{
-			return _dbContext.Employees.Find(id);
+			if (id == null || id == 0)
+			{
+				return null;
+			}
+
+			var employee = await _dbContext.Employees.FindAsync(id);
+			return employee;
 		}
 
-		public void Insert(Employee obj)
+		public async Task Insert(Employee obj)
 		{
-			_dbContext.Employees.Add(obj);
+			await _dbContext.Employees.AddAsync(obj);
 		}
 
-		public void Update(Employee obj)
+		public async Task Update(Employee obj)
 		{
 			_dbContext.Employees.Update(obj);
 		}
 
-		public void Update(int? id)
+		public async Task Update(int? id)
 		{
-			Update(GetById(id));
+			await Update(await GetById(id));
 		}
 
-		public void Delete(Employee obj)
+		public async Task Delete(Employee obj)
 		{
 			_dbContext.Employees.Remove(obj);
 		}
 
-		public void Delete(int? id)
+		public async Task Delete(int? id)
 		{
-			Delete(GetById(id));
+			await Delete(await GetById(id));
 		}
 
-		public void Save()
+		public async Task Save()
 		{
-			_dbContext.SaveChanges();
+			await _dbContext.SaveChangesAsync();
 		}
 
 		private IQueryable<Employee> FilterBySearch(IQueryable<Employee> employees, string? searchString)
@@ -123,15 +129,5 @@ namespace Cruddy.Web.Repositories
 			};
 			return -1;
 		}
-	}
-
-	public enum EmployeeTitle
-	{
-		VP,
-		Director,
-		AssistantDirector,
-		Manager,
-		AssistantManager,
-		Supervisor
 	}
 }

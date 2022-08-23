@@ -8,18 +8,18 @@ namespace Cruddy.Web.Repositories
 
 		Task<IQueryable<Employee>> GetAllFiltered(string? filteredDepartment, string? searchString);
 
-		Employee GetById(int? id);
+		Task<Employee> GetById(int? id);
 
-		void Insert(Employee obj);
+		Task Insert(Employee obj);
 
-		void Update(Employee obj);
+		Task Update(Employee obj);
 
-		void Update(int? id);
+		Task Update(int? id);
 
-		void Delete(Employee obj);
+		Task Delete(Employee obj);
 
-		void Delete(int? id);
+		Task Delete(int? id);
 
-		void Save();
+		Task Save();
 	}
 }

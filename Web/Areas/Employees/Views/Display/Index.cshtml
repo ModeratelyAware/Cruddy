@@ -1,4 +1,4 @@
-﻿@model Cruddy.Web.ViewModels.EmployeeViewModel
+﻿@model Web.ViewModels.EmployeeViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -24,31 +24,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Employees[0].FirstName)
+                @Html.DisplayNameFor(model => model.Employee.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employees[0].LastName)
+                @Html.DisplayNameFor(model => model.Employee.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employees[0].DepartmentId)
+                @Html.DisplayNameFor(model => model.Employee.DepartmentId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Title)
+                @Html.DisplayNameFor(model => model.Employee.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Email)
+                @Html.DisplayNameFor(model => model.Employee.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Phone1)
+                @Html.DisplayNameFor(model => model.Employee.Phone1)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Phone2)
+                @Html.DisplayNameFor(model => model.Employee.Phone2)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Ext)
+                @Html.DisplayNameFor(model => model.Employee.Ext)
             </th>
             <th style="width: 15%">
-                @Html.DisplayNameFor(model => model.Employees[0].Notes)
+                @Html.DisplayNameFor(model => model.Employee.Notes)
             </th>
             <th></th>
         </tr>

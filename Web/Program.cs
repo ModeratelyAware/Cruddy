@@ -1,12 +1,7 @@
-using Cruddy.Data;
-using Cruddy.Data.Identity.Models;
-using Cruddy.Web.Repositories;
-using Cruddy.Web.Scripts;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
+using ApplicationCore.Models.Identity;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Web.Scripts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +13,6 @@ builder.Services.AddDbContext<CruddyDbContext>(options =>
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddIdentity<CruddyUser, CruddyRole>().AddEntityFrameworkStores<CruddyDbContext>();
-
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 var app = builder.Build();
 

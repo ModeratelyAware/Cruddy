@@ -1,64 +1,59 @@
-﻿using Cruddy.Data;
-using Cruddy.Application.Models;
-using Cruddy.Web.Filters;
-using Cruddy.Web.Repositories;
-using Cruddy.Web.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
+﻿using ApplicationCore.Models.Identity;
 using Microsoft.AspNetCore.Identity;
-using Cruddy.Data.Identity.Models;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Web.Attributes;
+using Web.ViewModels;
 
-namespace Cruddy.Web.Account.Controllers
+namespace Web.Controllers;
+
+[ModelStateValidation]
+public class AccountController : Controller
 {
-	[ModelStateActionFilter]
-	public class AccountController : Controller
+	private readonly SignInManager<CruddyUser> _signInManager;
+
+	public AccountController(SignInManager<CruddyUser> signInManager)
 	{
-		private readonly SignInManager<CruddyUser> _signInManager;
+		_signInManager = signInManager;
+	}
 
-		public AccountController(SignInManager<CruddyUser> signInManager)
+	public async Task<IActionResult> Login()
+	{
+		var loginViewModel = new LoginViewModel();
+		return View(loginViewModel);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Login(LoginViewModel loginViewModel)
+	{
+		var account = await _signInManager.UserManager.FindByNameAsync(loginViewModel.Username);
+
+		if (account != null)
 		{
-			_signInManager = signInManager;
-		}
+			var result = await _signInManager.PasswordSignInAsync(account, loginViewModel.Password, true, false);
 
-		public IActionResult Login()
-		{
-			var loginViewModel = new LoginViewModel();
-			return View(loginViewModel);
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Login(LoginViewModel loginViewModel)
-		{
-			var account = await _signInManager.UserManager.FindByNameAsync(loginViewModel.Username);
-
-			if (account != null)
+			if (result.Succeeded)
 			{
-				var result = await _signInManager.PasswordSignInAsync(account, loginViewModel.Password, true, false);
-
-				if (result.Succeeded)
-				{
-					return RedirectToAction("Index", "Manage", new { area = "Admin" });
-				}
+				return RedirectToAction("Index", "Manage", new { area = "Admin" });
 			}
-
-			ModelState.AddModelError("", "Username or password is incorrect.");
-			return View(loginViewModel);
 		}
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Logout()
+		ModelState.AddModelError("", "Username or password is incorrect.");
+		return View(loginViewModel);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Logout()
+	{
+		var principal = HttpContext.User;
+
+		var signedIn = _signInManager.IsSignedIn(principal);
+		if (signedIn)
 		{
-			var principal = HttpContext.User as ClaimsPrincipal;
-			if (_signInManager.IsSignedIn(principal))
-			{
-				await _signInManager.SignOutAsync();
-			}
-			return RedirectToAction("Index", "Home", new { area = "" });
+			await _signInManager.SignOutAsync();
 		}
+
+		return RedirectToAction("Index", "Home", new { area = "" });
 	}
 }

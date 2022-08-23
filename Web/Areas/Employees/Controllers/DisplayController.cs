@@ -1,40 +1,38 @@
-﻿using Cruddy.Data;
-using Cruddy.Application.Models;
-using Cruddy.Web.Filters;
-using Cruddy.Web.Repositories;
-using Cruddy.Web.ViewModels;
+﻿using ApplicationCore.Queries;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
+using Web.ViewModels;
 
-namespace Cruddy.Web.Areas.Employees.Controllers
+namespace Web.Areas.Employees.Controllers;
+
+[Area("Employees")]
+public class DisplayController : Controller
 {
-	[Area("Employees")]
-	[ModelStateActionFilter]
-	public class DisplayController : Controller
+	private readonly CruddyDbContext _dbContext;
+
+	public DisplayController(CruddyDbContext dbContext)
 	{
-		private readonly IEmployeeRepository _employeeRepo;
-		private readonly IDepartmentRepository _departmentRepo;
+		_dbContext = dbContext;
+	}
 
-		public DisplayController(IEmployeeRepository employeeRepo, IDepartmentRepository departmentRepo)
+	public async Task<IActionResult> Index(string? filteredDepartment, string? searchString)
+	{
+		var employees = await _dbContext.Employees.Specify(new EmployeeDepartmentSpecification(filteredDepartment))
+												  .Specify(new EmployeeSearchSpecification(searchString))
+												  .SpecifyOrderBy(new EmployeeOrderByTitleSpecification())
+												  .SpecifyThenBy(new EmployeeOrderByLastNameSpecification())
+												  .ToListAsync();
+
+		var departmentList = new SelectList(await _dbContext.Departments.Select(d => d.Name).ToListAsync());
+
+		var employeeViewModel = new EmployeeViewModel()
 		{
-			_employeeRepo = employeeRepo;
-			_departmentRepo = departmentRepo;
-		}
+			Employees = employees,
+			Departments = departmentList
+		};
 
-		public async Task<IActionResult> Index(string? filteredDepartment, string? searchString)
-		{
-			var employees = await _employeeRepo.GetAllFiltered(filteredDepartment, searchString);
-			var departmentNames = await _departmentRepo.GetAllByName();
-
-			var employeeDepartmentVM = new EmployeeViewModel()
-			{
-				Employees = employees.ToList(),
-				Departments = new SelectList(departmentNames)
-			};
-
-			return View(employeeDepartmentVM);
-		}
+		return View(employeeViewModel);
 	}
 }

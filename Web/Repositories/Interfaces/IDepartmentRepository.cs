@@ -8,18 +8,18 @@ namespace Cruddy.Web.Repositories
 
 		Task<IQueryable<string>> GetAllByName();
 
-		Department GetById(int? id);
+		Task<Department> GetById(int? id);
 
-		void Insert(Department obj);
+		Task Insert(Department obj);
 
-		void Update(Department obj);
+		Task Update(Department obj);
 
-		void Update(int? id);
+		Task Update(int? id);
 
-		void Delete(Department obj);
+		Task Delete(Department obj);
 
-		void Delete(int? id);
+		Task Delete(int? id);
 
-		void Save();
+		Task Save();
 	}
 }

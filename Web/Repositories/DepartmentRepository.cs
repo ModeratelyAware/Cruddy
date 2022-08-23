@@ -23,39 +23,40 @@ namespace Cruddy.Web.Repositories
 			return _dbContext.Departments.Select(d => d.Name);
 		}
 
-		public Department GetById(int? id)
+		public async Task<Department> GetById(int? id)
 		{
-			return _dbContext.Departments.Find(id);
+			var department = await _dbContext.Departments.FindAsync(id);
+			return department;
 		}
 
-		public void Insert(Department obj)
+		public async Task Insert(Department obj)
 		{
-			throw new NotImplementedException();
+			await _dbContext.Departments.AddAsync(obj);
 		}
 
-		public void Update(Department obj)
+		public async Task Update(Department obj)
 		{
 			_dbContext.Departments.Update(obj);
 		}
 
-		public void Update(int? id)
+		public async Task Update(int? id)
 		{
-			throw new NotImplementedException();
+			await Update(await GetById(id));
 		}
 
-		public void Delete(Department obj)
+		public async Task Delete(Department obj)
 		{
 			_dbContext.Departments.Remove(obj);
 		}
 
-		public void Delete(int? id)
+		public async Task Delete(int? id)
 		{
-			Delete(GetById(id));
+			await Delete(await GetById(id));
 		}
 
-		public void Save()
+		public async Task Save()
 		{
-			_dbContext.SaveChanges();
+			await _dbContext.SaveChangesAsync();
 		}
 	}
 }
