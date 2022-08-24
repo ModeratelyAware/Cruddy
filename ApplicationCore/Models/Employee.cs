@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ApplicationCore.Regex;
 
 namespace ApplicationCore.Models;
 
@@ -31,15 +32,15 @@ public class Employee
 	public string Title { get; set; }
 
 	[StringLength(320)]
-	[EmailAddress]
+	[RegularExpression(RegexConstants.EmailAddress, ErrorMessage = "Invalid email address.")]
 	public string? Email { get; set; }
 
 	[StringLength(50)]
-	[RegularExpression(@"\(?(\d{3})\)?-?\s?(\d{3})\)?-?(\d{4})", ErrorMessage = "Invalid phone number.")]
+	[RegularExpression(RegexConstants.PhoneNumber, ErrorMessage = "Invalid phone number.")]
 	public string? Phone1 { get; set; }
 
 	[StringLength(50)]
-	[RegularExpression(@"\(?(\d{3})\)?-?\s?(\d{3})\)?-?(\d{4})", ErrorMessage = "Invalid phone number.")]
+	[RegularExpression(RegexConstants.PhoneNumber, ErrorMessage = "Invalid phone number.")]
 	public string? Phone2 { get; set; }
 
 	public int? Ext { get; set; }

@@ -6,7 +6,12 @@ using Web.Scripts;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("ProdConnection");
+
+if (builder.Environment.IsDevelopment())
+{
+	connectionString = builder.Configuration.GetConnectionString("DevConnection");
+}
 
 builder.Services.AddDbContext<CruddyDbContext>(options =>
 	options.UseSqlite(connectionString));

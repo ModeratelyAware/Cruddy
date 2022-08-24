@@ -3,11 +3,13 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Web.Attributes;
 using Web.ViewModels;
 
 namespace Web.Areas.Employees.Controllers;
 
 [Area("Employees")]
+[ModelStateValidation]
 public class DisplayController : Controller
 {
 	private readonly CruddyDbContext _dbContext;

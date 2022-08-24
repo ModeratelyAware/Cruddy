@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "ignored": "true",
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:CruddyDbContextConnection"
+    },
+    "secrets1": {
+      "ignored": "true",
+      "type": "secrets"
+    },
+    "sqlite1": {
+      "ignored": "True",
+      "type": "sqlite",
+      "connectionId": "ConnectionStrings:DefaultConnection",
+      "dynamicId": null
+    }
+  }
+}
