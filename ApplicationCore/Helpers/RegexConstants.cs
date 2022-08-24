@@ -9,8 +9,8 @@ namespace ApplicationCore.Regex;
 public static class RegexConstants
 {
 	public const string EmailAddress =
-		@"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+		@"[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?";
 
 	public const string PhoneNumber =
-		@"\(?(\d{3})\)?-?\s?(\d{3})\)?-?(\d{4})";
+		@"((\+?\d*)\s?\(?(\d{3})\)?\s?\.?-?(\d{3})\s?\.?-?(\d{4}))";
 }
