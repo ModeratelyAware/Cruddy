@@ -15,8 +15,8 @@ I utilized the specification pattern for queries,  a repository seemed redundant
 
 ```csharp
 _dbContext.Employees.Specify(new EmployeeDepartmentSpecification(filteredDepartment))
-				    .Specify(new EmployeeSearchSpecification(searchString))
-					.SpecifyOrderBy(new EmployeeOrderByTitleSpecification())
-					.SpecifyThenBy(new EmployeeOrderByLastNameSpecification())
-					.ToListAsync();
+		    .Specify(new EmployeeSearchSpecification(searchString))
+		    .SpecifyOrderBy(new EmployeeOrderByTitleSpecification())
+		    .SpecifyThenBy(new EmployeeOrderByLastNameSpecification())
+		    .ToListAsync();
 ```
