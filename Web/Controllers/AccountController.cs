@@ -34,7 +34,7 @@ public class AccountController : Controller
 
 			if (result.Succeeded)
 			{
-				return RedirectToAction("Index", "Manage", new { area = "Admin" });
+				return RedirectToAction("EmployeesSorted", "Manage", new { area = "Admin" });
 			}
 		}
 

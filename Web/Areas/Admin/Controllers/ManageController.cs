@@ -22,7 +22,7 @@ public class ManageController : Controller
 		_dbContext = dbContext;
 	}
 
-	public async Task<IActionResult> Index(string? filteredDepartment, string? searchString)
+	public async Task<IActionResult> EmployeesSorted(string? filteredDepartment, string? searchString)
 	{
 		var employees = await _dbContext.Employees.Specify(new EmployeeDepartmentSpecification(filteredDepartment))
 												  .Specify(new EmployeeSearchSpecification(searchString))
@@ -42,7 +42,7 @@ public class ManageController : Controller
 		return View(employeeViewModel);
 	}
 
-	public async Task<IActionResult> Create()
+	public async Task<IActionResult> CreateEmployee()
 	{
 		var employeeViewModel = new EmployeeViewModel
 		{
@@ -52,7 +52,7 @@ public class ManageController : Controller
 		return View(employeeViewModel);
 	}
 
-	public async Task<IActionResult> Update(int? id)
+	public async Task<IActionResult> UpdateEmployee(int? id)
 	{
 		var employee = await _dbContext.Employees.Specify(new EmployeeIdSpecification(id))
 												 .FirstOrDefaultAsync();
@@ -72,7 +72,7 @@ public class ManageController : Controller
 		return View(employeeDepartmentVM);
 	}
 
-	public async Task<IActionResult> Delete(int? id)
+	public async Task<IActionResult> DeleteEmployee(int? id)
 	{
 		var employee = await _dbContext.Employees.Specify(new EmployeeIdSpecification(id))
 												 .FirstOrDefaultAsync();
@@ -94,28 +94,28 @@ public class ManageController : Controller
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Create(Employee employee)
+	public async Task<IActionResult> CreateEmployee(Employee employee)
 	{
 		await _dbContext.Employees.AddAsync(employee);
 		await _dbContext.SaveChangesAsync();
-		return RedirectToAction("Index");
+		return RedirectToAction("EmployeesSorted");
 	}
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Update(Employee employee)
+	public async Task<IActionResult> UpdateEmployee(Employee employee)
 	{
 		_dbContext.Employees.Update(employee);
 		await _dbContext.SaveChangesAsync();
-		return RedirectToAction("Index");
+		return RedirectToAction("EmployeesSorted");
 	}
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> DeletePost(Employee employee)
+	public async Task<IActionResult> DeleteEmployee(Employee employee)
 	{
 		_dbContext.Employees.Remove(employee);
 		await _dbContext.SaveChangesAsync();
-		return RedirectToAction("Index");
+		return RedirectToAction("EmployeesSorted");
 	}
 }

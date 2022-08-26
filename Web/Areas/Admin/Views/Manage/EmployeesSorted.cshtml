@@ -7,7 +7,7 @@
 <h1>Index</h1>
 <div class="row">
     <div class="col-auto">
-        <form asp-controller="Manage" asp-action="Index" method="get">
+        <form asp-controller="Manage" asp-action="EmployeesSorted" method="get">
             <p>
                 Department: <select asp-for="FilteredDepartment" asp-items="Model.Departments">
                     <option value="">All</option>
@@ -19,7 +19,7 @@
         </form>
     </div>
     <div class="col text-end">
-        <a asp-action="Create" type="submit" value="Create" class="btn btn-primary">Create</a>
+        <a asp-action="CreateEmployee" type="submit" value="Create" class="btn btn-primary">Create</a>
     </div>
 </div>
 
@@ -90,8 +90,8 @@
                 @Html.DisplayFor(modelItem => item.Notes)
             </td>
             <td>
-                <a asp-action="Update" asp-route-id="@item.Id">Update</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="UpdateEmployee" asp-route-id="@item.Id">Update</a> |
+                <a asp-action="DeleteEmployee" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

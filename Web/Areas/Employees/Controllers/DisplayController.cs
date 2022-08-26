@@ -19,7 +19,8 @@ public class DisplayController : Controller
 		_dbContext = dbContext;
 	}
 
-	public async Task<IActionResult> Index(string? filteredDepartment, string? searchString)
+	[HttpGet]
+	public async Task<IActionResult> EmployeesSorted(string? filteredDepartment, string? searchString)
 	{
 		var employees = await _dbContext.Employees.Specify(new EmployeeDepartmentSpecification(filteredDepartment))
 												  .Specify(new EmployeeSearchSpecification(searchString))
