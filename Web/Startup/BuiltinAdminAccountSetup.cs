@@ -1,20 +1,13 @@
 ﻿using ApplicationCore.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 
-namespace Web.Scripts;
+namespace Web.Startup;
 
-public class CreateDefaultUsersAndRoles
+public static class BuiltinAdminAccountSetup
 {
-	private readonly IServiceProvider _serviceProvider;
-
-	public CreateDefaultUsersAndRoles(IServiceProvider serviceProvider)
+	public static async Task<WebApplication> CreateBuiltinAdminAccount(this WebApplication app)
 	{
-		_serviceProvider = serviceProvider;
-	}
-
-	public async Task Run()
-	{
-		using (var scope = _serviceProvider.CreateScope())
+		using (var scope = app.Services.CreateScope())
 		{
 			var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<CruddyRole>>();
 			var userManager = scope.ServiceProvider.GetRequiredService<UserManager<CruddyUser>>();
@@ -55,5 +48,7 @@ public class CreateDefaultUsersAndRoles
 				}
 			}
 		}
+
+		return app;
 	}
 }

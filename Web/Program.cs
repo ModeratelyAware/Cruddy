@@ -1,23 +1,14 @@
 using ApplicationCore.Models.Identity;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Web.Scripts;
+using Web.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("ProdConnection");
+var connectionString = builder.BuildConnectionString();
 
-if (builder.Environment.IsDevelopment())
-{
-	connectionString = builder.Configuration.GetConnectionString("DevConnection");
-}
-
-builder.Services.AddDbContext<CruddyDbContext>(options =>
-	options.UseSqlite(connectionString));
-
-builder.Services.AddControllersWithViews();
-builder.Services.AddIdentity<CruddyUser, CruddyRole>().AddEntityFrameworkStores<CruddyDbContext>();
+builder.Services.RegisterDbServices(connectionString);
+builder.Services.RegisterServices();
 
 var app = builder.Build();
 
@@ -28,33 +19,19 @@ if (!app.Environment.IsDevelopment())
 	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 	app.UseHsts();
 }
+
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication(); ;
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-	endpoints.MapControllerRoute(
-		name: "Admin",
-		pattern: "{area:exists}/{controller=Manage}/{action=Index}/{id?}");
+app.MapEndpoints();
 
-	endpoints.MapControllerRoute(
-		name: "Employees",
-		pattern: "{area:exists}/{controller=Display}/{action=Index}/{id?}");
-
-	endpoints.MapControllerRoute(
-		name: "Account",
-		pattern: "{controller=Account}/{action=Index}/{id?}");
-
-	endpoints.MapControllerRoute(
-		name: "default",
-		pattern: "{controller=Home}/{action=Index}/{id?}");
-});
-
-await new CreateDefaultUsersAndRoles(app.Services).Run();
+app.CreateBuiltinAdminAccount();
 
 app.Run();
