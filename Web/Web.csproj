@@ -8,9 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Views\**" />
     <Compile Remove="Repositories\**" />
+    <Content Remove="Areas\Views\**" />
     <Content Remove="Repositories\**" />
+    <EmbeddedResource Remove="Areas\Views\**" />
     <EmbeddedResource Remove="Repositories\**" />
+    <None Remove="Areas\Views\**" />
     <None Remove="Repositories\**" />
   </ItemGroup>
 
@@ -31,10 +35,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Views\Shared\" />
   </ItemGroup>
 
 </Project>

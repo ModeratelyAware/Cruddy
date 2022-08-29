@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.BuildConnectionString();
 
+builder.Services.ConfigureServices();
 builder.Services.RegisterDbServices(connectionString);
 builder.Services.RegisterServices();
 

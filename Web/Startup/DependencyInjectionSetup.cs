@@ -12,7 +12,7 @@ namespace Web.Startup;
 
 public static class DependencyInjectionSetup
 {
-	public static IServiceCollection RegisterServices(this IServiceCollection services)
+	public static IServiceCollection ConfigureServices(this IServiceCollection services)
 	{
 		services.Configure<RouteOptions>(options =>
 		{
@@ -21,15 +21,20 @@ public static class DependencyInjectionSetup
 			options.AppendTrailingSlash = true;
 		});
 
-		services.AddControllersWithViews();
-		services.AddIdentity<CruddyUser, CruddyRole>().AddEntityFrameworkStores<CruddyDbContext>();
-
 		services.ConfigureApplicationCookie(options =>
 		{
 			options.LoginPath = "/login";
 			options.LogoutPath = "/logout";
 			options.ReturnUrlParameter = options.ReturnUrlParameter.ToLower();
 		});
+
+		return services;
+	}
+
+	public static IServiceCollection RegisterServices(this IServiceCollection services)
+	{
+		services.AddControllersWithViews();
+		services.AddIdentity<CruddyUser, CruddyRole>().AddEntityFrameworkStores<CruddyDbContext>();
 
 		return services;
 	}

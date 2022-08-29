@@ -24,7 +24,6 @@ public class ManageController : Controller
 	}
 
 	[HttpGet("Employees")]
-	[AllowAnonymous]
 	public async Task<IActionResult> EmployeesSorted(string? filteredDepartment, string? searchString)
 	{
 		var employees = await _dbContext.Employees.Specify(new EmployeeDepartmentSpecification(filteredDepartment))
