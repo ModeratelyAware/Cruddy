@@ -4,7 +4,6 @@ using Web.ViewModels;
 
 namespace Web.Controllers;
 
-[Controller]
 public class HomeController : Controller
 {
 	private readonly ILogger<HomeController> _logger;
@@ -14,6 +13,9 @@ public class HomeController : Controller
 		_logger = logger;
 	}
 
+	[Route("")]
+	[Route("Home")]
+	[Route("Home/Index")]
 	public async Task<IActionResult> Index()
 	{
 		return View();

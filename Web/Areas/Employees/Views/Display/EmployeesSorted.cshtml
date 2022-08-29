@@ -9,11 +9,11 @@
     <div class="col-auto">
         <form asp-controller="Display" asp-action="EmployeesSorted" method="get">
             <p>
-                Department: <select asp-for="FilteredDepartment" asp-items="Model.Departments">
-                    <option value="">All</option>
-                </select>
-                
-                Search: <input type="text" asp-for="SearchString" />
+                Department: 
+                @Html.DropDownListFor(x => x.FilteredDepartment, Model.Departments, "All")
+
+                Search: 
+                <input type="text" asp-for="SearchString" />
                 <input type="submit" value="Filter" />
             </p>
         </form>
@@ -50,7 +50,6 @@
             <th style="width: 15%">
                 @Html.DisplayNameFor(model => model.Employee.Notes)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>

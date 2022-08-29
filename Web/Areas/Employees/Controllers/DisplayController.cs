@@ -9,6 +9,7 @@ using Web.ViewModels;
 namespace Web.Areas.Employees.Controllers;
 
 [Area("Employees")]
+[Route("[area]")]
 [ModelStateValidation]
 public class DisplayController : Controller
 {
@@ -19,7 +20,7 @@ public class DisplayController : Controller
 		_dbContext = dbContext;
 	}
 
-	[HttpGet]
+	[HttpGet("")]
 	public async Task<IActionResult> EmployeesSorted(string? filteredDepartment, string? searchString)
 	{
 		var employees = await _dbContext.Employees.Specify(new EmployeeDepartmentSpecification(filteredDepartment))

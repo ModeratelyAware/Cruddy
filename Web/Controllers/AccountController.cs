@@ -16,6 +16,7 @@ public class AccountController : Controller
 		_signInManager = signInManager;
 	}
 
+	[Route("Login")]
 	public async Task<IActionResult> Login()
 	{
 		var loginViewModel = new LoginViewModel();
@@ -24,6 +25,7 @@ public class AccountController : Controller
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
+	[Route("Login")]
 	public async Task<IActionResult> Login(LoginViewModel loginViewModel)
 	{
 		var account = await _signInManager.UserManager.FindByNameAsync(loginViewModel.Username);
@@ -44,6 +46,7 @@ public class AccountController : Controller
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
+	[Route("Logout")]
 	public async Task<IActionResult> Logout()
 	{
 		var principal = HttpContext.User;
