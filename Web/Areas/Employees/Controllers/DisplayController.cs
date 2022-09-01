@@ -3,14 +3,12 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Web.Attributes;
 using Web.ViewModels;
 
 namespace Web.Areas.Employees.Controllers;
 
 [Area("Employees")]
 [Route("[area]")]
-[ModelStateValidation]
 public class DisplayController : Controller
 {
 	private readonly CruddyDbContext _dbContext;
@@ -31,12 +29,12 @@ public class DisplayController : Controller
 
 		var departmentList = new SelectList(await _dbContext.Departments.Select(d => d.Name).ToListAsync());
 
-		var employeeViewModel = new EmployeeViewModel()
+		var model = new EmployeeViewModel()
 		{
 			Employees = employees,
 			Departments = departmentList
 		};
 
-		return View(employeeViewModel);
+		return View(model);
 	}
 }

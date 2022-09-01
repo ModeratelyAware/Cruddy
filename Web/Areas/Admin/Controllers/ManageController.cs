@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Web.Attributes;
 using Web.ViewModels;
 
 namespace Web.Areas.Admin.Controllers;
@@ -13,7 +12,6 @@ namespace Web.Areas.Admin.Controllers;
 [Area("Admin")]
 [Route("[area]")]
 [Authorize(Roles = "Admin")]
-[ModelStateValidation]
 public class ManageController : Controller
 {
 	private readonly CruddyDbContext _dbContext;
@@ -35,24 +33,24 @@ public class ManageController : Controller
 		var departmentList = new SelectList(await _dbContext.Departments.Select(d => d.Name)
 																		.ToListAsync());
 
-		var employeeViewModel = new EmployeeViewModel()
+		var model = new EmployeeViewModel()
 		{
 			Employees = employees,
 			Departments = departmentList
 		};
 
-		return View(employeeViewModel);
+		return View(model);
 	}
 
 	[HttpGet("Employees/Create")]
 	public async Task<IActionResult> CreateEmployee()
 	{
-		var employeeViewModel = new EmployeeViewModel
+		var model = new EmployeeViewModel
 		{
 			Departments = new SelectList(await _dbContext.Departments.ToListAsync(), "Id", "Name")
 		};
 
-		return View(employeeViewModel);
+		return View(model);
 	}
 
 	[HttpGet("Employees/Update/{id}")]
@@ -66,14 +64,14 @@ public class ManageController : Controller
 			throw new HttpRequestException("Employee not found.");
 		}
 
-		var employeeDepartmentVM = new EmployeeViewModel
+		var model = new EmployeeViewModel
 		{
 			Employee = employee,
 			Departments = new SelectList(
 				await _dbContext.Departments.ToListAsync(), "Id", "Name")
 		};
 
-		return View(employeeDepartmentVM);
+		return View(model);
 	}
 
 	[HttpGet("Employees/Delete/{id}")]
@@ -87,36 +85,60 @@ public class ManageController : Controller
 			throw new HttpRequestException("Employee not found.");
 		}
 
-		var employeeDepartmentVM = new EmployeeViewModel()
+		var model = new EmployeeViewModel()
 		{
 			Employee = employee,
 			Departments = new SelectList(
 				await _dbContext.Departments.ToListAsync(), "Id", "Name")
 		};
 
-		return View(employeeDepartmentVM);
+		return View(model);
 	}
 
 	[HttpPost("Employees/Create")]
-	public async Task<IActionResult> CreateEmployee(Employee employee)
+	public async Task<IActionResult> CreateEmployee(EmployeeViewModel model)
 	{
-		await _dbContext.Employees.AddAsync(employee);
+		if (!ModelState.IsValid)
+		{
+			ModelState.AddModelError("",
+				"Unable to create employee. Modelstate is invalid.");
+
+			return View(model);
+		}
+
+		await _dbContext.Employees.AddAsync(model.Employee);
 		await _dbContext.SaveChangesAsync();
 		return RedirectToAction("EmployeesSorted");
 	}
 
 	[HttpPost("Employees/Update/{id}")]
-	public async Task<IActionResult> UpdateEmployee(Employee employee)
+	public async Task<IActionResult> UpdateEmployee(EmployeeViewModel model)
 	{
-		_dbContext.Employees.Update(employee);
+		if (!ModelState.IsValid)
+		{
+			ModelState.AddModelError("",
+				"Unable to save changes. Modelstate is invalid.");
+
+			return View(model);
+		}
+
+		_dbContext.Employees.Update(model.Employee);
 		await _dbContext.SaveChangesAsync();
 		return RedirectToAction("EmployeesSorted");
 	}
 
 	[HttpPost("Employees/Delete/{id}")]
-	public async Task<IActionResult> DeleteEmployee(Employee employee)
+	public async Task<IActionResult> DeleteEmployee(EmployeeViewModel model)
 	{
-		_dbContext.Employees.Remove(employee);
+		if (!ModelState.IsValid)
+		{
+			ModelState.AddModelError("",
+				"Unable to delete employee. Modelstate is invalid.");
+
+			return View(model);
+		}
+
+		_dbContext.Employees.Remove(model.Employee);
 		await _dbContext.SaveChangesAsync();
 		return RedirectToAction("EmployeesSorted");
 	}

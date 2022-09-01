@@ -5,10 +5,13 @@ namespace Web.ViewModels;
 
 public class EmployeeViewModel
 {
-	public Department Department { get; set; }
 	public Employee Employee { get; set; }
-	public IEnumerable<Employee> Employees { get; set; }
-	public SelectList Departments { get; set; }
-	public string FilteredDepartment { get; set; }
-	public string SearchString { get; set; }
+
+	public IEnumerable<Employee>? Employees { get; set; }
+
+	public SelectList? Departments { get; set; }
+
+	public string? FilteredDepartment { get; set; }
+
+	public string? SearchString { get; set; }
 }
