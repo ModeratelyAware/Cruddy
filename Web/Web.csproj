@@ -38,4 +38,13 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\icons8-delete-64.png" />
+    <None Include="wwwroot\images\icons8-edit-64.png" />
+  </ItemGroup>
+
 </Project>
